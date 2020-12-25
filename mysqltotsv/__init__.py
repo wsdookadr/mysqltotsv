@@ -81,7 +81,7 @@ class Splitter:
                 num+=1
                 tbl_name = g.groups()[0]
 
-                if tbl_name not in self.table_filter:
+                if len(self.table_filter) > 0 and tbl_name not in self.table_filter:
                     continue
 
                 line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
