@@ -11,7 +11,7 @@ Install
 
 To install from pypi:
 
-    pip3 install --user mysql-to-tsv
+    pip3 install --user mysqltotsv
 
 Usage
 =====
