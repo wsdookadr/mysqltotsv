@@ -2,9 +2,9 @@ About
 =====
 
 This module provides the **mysqltotsv.Splitter** class and a CLI tool to allow conversion
-of large MySQL dumps to the TSV format. 
+of large MySQL dumps to the [TSV format](https://en.wikipedia.org/wiki/Tab-separated_values). 
 
-The module assumes the MySQL dump to be encoded in UTF-8 format.
+The module assumes the MySQL dump to be encoded in [UTF-8 format](https://en.wikipedia.org/wiki/UTF-8).
 
 Install
 =======
@@ -17,7 +17,7 @@ Usage
 =====
 
 The following command takes a MySQL dump and creates a separate TSV file for each
-table found inside:
+table found inside (the output directory needs to be present):
 
     python3.7 mysql-to-tsv.py --file dump.sql --outdir out1
 
