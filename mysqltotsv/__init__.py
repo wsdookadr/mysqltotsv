@@ -20,7 +20,7 @@ record: "(" cells ")"
 
 cells: cell | cell "," cells
 
-cell: NUMBER | ESCAPED_STRING1 | ESCAPED_STRING2
+cell: NUMBER | ESCAPED_STRING1 | ESCAPED_STRING2 | "NULL"
 
 %import common (WS_INLINE, NUMBER)
 %ignore WS_INLINE
