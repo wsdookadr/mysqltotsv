@@ -53,6 +53,43 @@ class ProcessAST(Transformer):
     def cell(self, cell):
         return re.sub(r"\t","",cell[0].value)
 
+class ExtractSchema:
+    def __init__(self, args):
+        self.args = args
+
+    def doit(self):
+        self.in_fh = open(self.args.file,"rb")
+        self.out_fh = open(os.path.join(self.args.outdir,"schema.sql"),"w")
+
+        STATE1,STATE2=1,2
+        state = 1
+
+        buf = ""
+
+        for line in self.in_fh:
+            try:
+                line = line.decode("utf-8")
+            except UnicodeDecodeError as e:
+                decoded_unicode = line.decode('utf-8', 'replace')
+                line = decoded_unicode
+
+            tbl_name = None
+            g1 = re.match(r"^CREATE TABLE ", line)
+            g2 = re.match(r"^\).*;", line)
+
+            if state == STATE1 and g1:
+                buf += line
+                state = STATE2
+            elif state == STATE2 and g2:
+                buf += line
+                state = STATE1
+            elif state == STATE2:
+                buf += line
+
+        self.out_fh.write(buf)
+        self.out_fh.close()
+        self.in_fh.close()
+
 class Splitter:
     def __init__(self, args):
         lark_logger.setLevel(logging.DEBUG)
@@ -95,3 +132,8 @@ class Splitter:
                 self.seen_table |= set([tbl_name])
 
                 yield { "table_name": tbl_name, "rows": rows }
+
+        self.fh.close()
+        yield None
+
+

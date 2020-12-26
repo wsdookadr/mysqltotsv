@@ -6,6 +6,9 @@ of large MySQL dumps to the [TSV format](https://en.wikipedia.org/wiki/Tab-separ
 
 The module assumes the MySQL dump to be encoded in [UTF-8 format](https://en.wikipedia.org/wiki/UTF-8).
 
+This is primarily intended for large MySQL dumps where opening them with a text editor is impractical
+and handling them is easier through a tool.
+
 Install
 =======
 
@@ -29,7 +32,7 @@ More details about the CLI switches:
 
 ```
 usage: mysql-to-tsv.py [-h] --file FILE --outdir OUTDIR
-                       [--table-filter TABLE_FILTER]
+                       [--table-filter TABLE_FILTER] [--only-schema]
 
 Tool for conversion of large MySQL dumps to TSV format
 
@@ -39,6 +42,7 @@ optional arguments:
   --outdir OUTDIR       output directory
   --table-filter TABLE_FILTER
                         filtered tables
+  --only-schema         write the schema to the output directory
 ```
 
 Support

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import argparse
 import os.path
-from mysqltotsv import Splitter
+from mysqltotsv import Splitter, ExtractSchema
 
 def valid_file(inputfile):
     if not os.path.isfile(inputfile):
@@ -17,24 +17,26 @@ arg_parser = argparse.ArgumentParser(description='Tool for conversion of large M
 arg_parser.add_argument('--file', dest='file', action='store', required=True, type=valid_file, help='mysql dump file')
 arg_parser.add_argument('--outdir', dest='outdir', action='store', required=True, type=valid_dir, help='output directory')
 arg_parser.add_argument('--table-filter', dest='table_filter', action='store', required=False, type=str, help='filtered tables')
+arg_parser.add_argument('--only-schema', dest='only_schema', action='store_true', help='write the schema to the output directory')
 args   = arg_parser.parse_args()
 
-splitter = Splitter(args)
+if args.only_schema:
+    extract = ExtractSchema(args)
+    extract.doit()
+else:
+    splitter = Splitter(args)
+    rows_written = 0
+    seen_outfile = set()
+    for batch in splitter.next_batch():
+        outfile = os.path.join(args.outdir,batch["table_name"] + ".tsv")
+        if os.path.exists(outfile) and outfile not in seen_outfile:
+            os.remove(outfile)
 
-rows_written = 0
-seen_outfile = set()
-for batch in splitter.next_batch():
+        seen_outfile |= set([outfile])
 
-    outfile = os.path.join(args.outdir,batch["table_name"] + ".tsv")
-    if os.path.exists(outfile) and outfile not in seen_outfile:
-        os.remove(outfile)
-
-    seen_outfile |= set([outfile])
-
-    with open(outfile,"a") as fh_out:
-        rows_written += len(batch["rows"])
-        for r in batch["rows"]:
-            fh_out.write("\t".join(r) + "\n")
-        print("rows written: ",rows_written)
-
+        with open(outfile,"a") as fh_out:
+            rows_written += len(batch["rows"])
+            for r in batch["rows"]:
+                fh_out.write("\t".join(r) + "\n")
+            print("rows written: ",rows_written)
 
