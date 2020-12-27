@@ -20,7 +20,9 @@ record: "(" cells ")"
 
 cells: cell | cell "," cells
 
-cell: NUMBER | ESCAPED_STRING1 | ESCAPED_STRING2 | "NULL"
+NULL: "NULL"
+
+cell: NUMBER | ESCAPED_STRING1 | ESCAPED_STRING2 | NULL
 
 %import common (WS_INLINE, NUMBER)
 %ignore WS_INLINE
@@ -44,14 +46,19 @@ class ProcessAST(Transformer):
         if len(cells) == 1:
             rv = cells[0]
         else:
-            if isinstance(cells[1],str):
+            if isinstance(cells[1],(str,int,float,)):
                 rv = cells[0],cells[1]
             elif isinstance(cells[1],tuple):
                 rv = cells[0],*cells[1]
         return rv
 
     def cell(self, cell):
-        return re.sub(r"\t","",cell[0].value)
+        if   re.match(r'^\d+(?:\.\d+)$', cell[0].value):
+            return float(cell[0].value)
+        elif re.match(r'^\d+$', str(cell[0].value)):
+            return int(cell[0].value)
+        else:
+            return re.sub(r"\t","",cell[0].value)
 
 class ExtractSchema:
     def __init__(self, args):

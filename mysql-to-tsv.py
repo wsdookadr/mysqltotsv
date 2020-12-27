@@ -37,6 +37,6 @@ else:
         with open(outfile,"a") as fh_out:
             rows_written += len(batch["rows"])
             for r in batch["rows"]:
-                fh_out.write("\t".join(r) + "\n")
+                fh_out.write("\t".join(map(str, r)) + "\n")
             print("rows written: ",rows_written)
 
