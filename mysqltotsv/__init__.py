@@ -122,11 +122,11 @@ class Splitter:
             g = re.match(r"^INSERT INTO `([^\`]+)`", line)
 
             if g:
-                num+=1
                 tbl_name = g.groups()[0]
 
                 if len(self.table_filter) > 0 and tbl_name not in self.table_filter:
                     continue
+                num+=1
 
                 line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
                 line = re.sub(r" VALUES ",", ",line)
@@ -141,6 +141,5 @@ class Splitter:
                 yield { "table_name": tbl_name, "rows": rows }
 
         self.fh.close()
-        yield None
 
 

@@ -3,5 +3,6 @@ package_upload:
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*
 
-
+test:
+	nosetests --nocapture -v tests/*.py
 
