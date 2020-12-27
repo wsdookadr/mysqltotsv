@@ -2,7 +2,7 @@
 import argparse
 import os.path
 import re
-from mysqltotsv import Splitter, ExtractSchema
+from mysqltotsv import Splitter, ExtractSchema, row_strip_quotes
 
 def valid_file(inputfile):
     if not os.path.isfile(inputfile):
