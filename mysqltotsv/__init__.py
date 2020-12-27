@@ -37,7 +37,7 @@ class ProcessAST(Transformer):
         return rv
 
     def record(self, cells):
-        return cells[0]
+        return list(cells[0])
 
     def start(self, items):
         return items[0]
@@ -55,7 +55,7 @@ class ProcessAST(Transformer):
     def cell(self, cell):
         if   re.match(r'^\d+(?:\.\d+)$', cell[0].value):
             return float(cell[0].value)
-        elif re.match(r'^\d+$', str(cell[0].value)):
+        elif re.match(r'^\d+$', cell[0].value):
             return int(cell[0].value)
         else:
             return re.sub(r"\t","",cell[0].value)
@@ -142,4 +142,18 @@ class Splitter:
 
         self.fh.close()
 
+
+
+def row_strip_quotes(r):
+    for i in range(len(r)):
+        if isinstance(r[i], str):
+            if (r[i].startswith("'")  and r[i].endswith("'")):
+                r[i] = re.sub(r"^'","",re.sub(r"'$","",r[i]))
+                continue
+            if (r[i].startswith("\"") and r[i].endswith("\"")):
+                r[i] = re.sub(r'^"',"",re.sub(r'"$',"",r[i]))
+                continue
+            if (r[i].startswith("`")  and r[i].endswith("`")):
+                r[i] = re.sub(r'^`',"",re.sub(r'`$',"",r[i]))
+                continue
 

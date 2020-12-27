@@ -33,6 +33,7 @@ More details about the CLI switches:
 ```
 usage: mysql-to-tsv.py [-h] --file FILE --outdir OUTDIR
                        [--table-filter TABLE_FILTER] [--only-schema]
+                       [--strip-quotes]
 
 Tool for conversion of large MySQL dumps to TSV format
 
@@ -43,6 +44,7 @@ optional arguments:
   --table-filter TABLE_FILTER
                         filtered tables
   --only-schema         write the schema to the output directory
+  --strip-quotes        strip quotes from values
 ```
 
 Support

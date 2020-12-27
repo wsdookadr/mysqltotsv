@@ -1,10 +1,10 @@
 import argparse
-from mysqltotsv import Splitter, ProcessAST
+from mysqltotsv import Splitter, ProcessAST, row_strip_quotes
 
 class MockArgs:
     def __init__(self): pass
 
-def test_processast_type_conversion():
+def test_ProcessAST_type_conversion():
     p = ProcessAST()
     class o:
         def __init__(self): pass
@@ -23,7 +23,7 @@ def test_next_batch_single():
     args.outdir = "tests/"
     splitter = Splitter(args)
 
-    expected = {'table_name': 't1_tmp', 'rows': [('`col1`', '`col2`', '`col3`', '`col4`'), (1, "'abc'", "'def'", 4)]}
+    expected = {'table_name': 't1_tmp', 'rows': [['`col1`', '`col2`', '`col3`', '`col4`'], [1, "'abc'", "'def'", 4]]}
     got = next(splitter.next_batch())
     assert got == expected
 
@@ -34,7 +34,7 @@ def test_next_batch_multiple():
     args.outdir = "tests/"
     splitter = Splitter(args)
 
-    expected = {'table_name': 't1_tmp', 'rows': [('`col1`', '`col2`', '`col3`', '`col4`'), (1, "'abc'", "'def'", 4), (2, "'ghi'", "'jkl'", 5), (3, "'zke'", "'maa'", 7)]}
+    expected = {'table_name': 't1_tmp', 'rows': [['`col1`', '`col2`', '`col3`', '`col4`'], [1, "'abc'", "'def'", 4], [2, "'ghi'", "'jkl'", 5], [3, "'zke'", "'maa'", 7]]}
     got = next(splitter.next_batch())
     assert got == expected
 
@@ -45,8 +45,14 @@ def test_next_batch_withnull():
     args.outdir = "tests/"
     splitter = Splitter(args)
     got = next(splitter.next_batch())
-    expected = {'table_name': 't1_tmp', 'rows': [('`col1`', '`col2`', '`col3`', '`col4`'), ('NULL', "'abc'", "'def'", 'NULL')]}
+
+    expected = {'table_name': 't1_tmp', 'rows': [['`col1`', '`col2`', '`col3`', '`col4`'], ['NULL', "'abc'", "'def'", 'NULL']]}
     assert got == expected
 
+def test_row_strip_quotes():
+    r = ['NULL', "'abc'", "`def`", 'NULL']
+    expected = ['NULL', "abc", "def", 'NULL']
+    row_strip_quotes(r)
+    assert r == expected
 
 
