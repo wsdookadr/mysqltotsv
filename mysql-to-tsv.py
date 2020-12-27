@@ -28,8 +28,6 @@ else:
     rows_written = 0
     seen_outfile = set()
     for batch in splitter.next_batch():
-        print(batch)
-
         outfile = os.path.join(args.outdir,batch["table_name"] + ".tsv")
         if os.path.exists(outfile) and outfile not in seen_outfile:
             os.remove(outfile)
