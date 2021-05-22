@@ -34,6 +34,7 @@ More details about the CLI switches:
 usage: mysql-to-tsv.py [-h] --file FILE --outdir OUTDIR
                        [--table-filter TABLE_FILTER] [--only-schema]
                        [--strip-quotes] [--debug] [--ignore-errors]
+                       [--estimate1] [--estimate2]
 
 Tool for conversion of large MySQL dumps to TSV format
 
@@ -47,6 +48,8 @@ optional arguments:
   --strip-quotes        strip quotes from values
   --debug               print debug information
   --ignore-errors       ignore processing errors
+  --estimate1           estimate row counts for each table inside the sql file
+  --estimate2           estimate row counts for each table inside the sql file
 ```
 
 Support
