@@ -2,7 +2,7 @@
 import argparse
 import os.path
 import re
-from mysqltotsv import Splitter, ExtractSchema, row_strip_quotes
+from mysqltotsv import Splitter, ExtractSchema, Estimate1, Estimate2, row_strip_quotes
 
 def valid_file(inputfile):
     if not os.path.isfile(inputfile):
@@ -22,10 +22,20 @@ arg_parser.add_argument('--only-schema', dest='only_schema', action='store_true'
 arg_parser.add_argument('--strip-quotes', dest='strip_quotes', action='store_true', help='strip quotes from values')
 arg_parser.add_argument('--debug', dest='debug', action='store_true', help='print debug information')
 arg_parser.add_argument('--ignore-errors', dest='ignore_errors', action='store_true', help='ignore processing errors')
+arg_parser.add_argument('--estimate1', dest='estimate1', action='store_true', help='estimate row counts for each table inside the sql file')
+arg_parser.add_argument('--estimate2', dest='estimate2', action='store_true', help='estimate row counts for each table inside the sql file')
 
 args   = arg_parser.parse_args()
 
-if args.only_schema:
+if  args.estimate1:
+    estimate = Estimate1(args)
+    estimate.doit()
+    estimate.print()
+elif args.estimate2:
+    estimate = Estimate2(args)
+    estimate.doit()
+    estimate.print()
+elif args.only_schema:
     extract = ExtractSchema(args)
     extract.doit()
 else:

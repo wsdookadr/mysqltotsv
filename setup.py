@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mysqltotsv",
-    version="0.1.2",
+    version="0.1.3",
     author="Stefan Corneliu Petrea",
-    author_email="stefan@garage-coding.com",
+    author_email="stefan.petrea@gmail.com",
     description="Tool for conversion of MySQL dumps to TSV format",
     long_description=long_description,
     long_description_content_type="text/markdown",

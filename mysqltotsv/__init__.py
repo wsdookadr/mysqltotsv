@@ -28,6 +28,7 @@ cell: NUMBER | ESCAPED_STRING1 | ESCAPED_STRING2 | NULL
 %ignore WS_INLINE
 """, parser='lalr', start='start', regex=True)
 
+
 class ProcessAST(Transformer):
     def records(self, records):
         if len(records) == 1:
@@ -59,6 +60,73 @@ class ProcessAST(Transformer):
             return int(cell[0].value)
         else:
             return re.sub(r"\t","",cell[0].value)
+
+class Estimate1:
+
+    def __init__(self, args):
+        self.args = args
+
+    def doit(self):
+        fh = open(self.args.file,"rb")
+        counts = {}
+        for line in fh:
+            try:
+                line = line.decode("utf-8")
+            except UnicodeDecodeError as e:
+                decoded_unicode = line.decode('utf-8', 'replace')
+                line = decoded_unicode
+
+            m_insert = re.match(r"^INSERT INTO `([^\`]+)`", line)
+            if m_insert:
+                tbl_name = m_insert.groups()[0]
+                cnt_rows = line.count("),(") + 1
+                if tbl_name not in counts:
+                    counts[tbl_name] = cnt_rows
+                else:
+                    counts[tbl_name] += cnt_rows
+        self.counts = counts
+        return counts
+
+    def print(self):
+        for k in sorted(self.counts.keys()):
+            print(k,self.counts[k])
+
+class Estimate2:
+
+    def __init__(self, args):
+        self.args = args
+
+    def doit(self):
+        fh = open(self.args.file,"rb")
+        counts = {}
+        for line in fh:
+            try:
+                line = line.decode("utf-8")
+            except UnicodeDecodeError as e:
+                decoded_unicode = line.decode('utf-8', 'replace')
+                line = decoded_unicode
+
+            m_insert = re.match(r"^INSERT INTO `([^\`]+)`", line)
+            if m_insert:
+                tbl_name = m_insert.groups()[0]
+                line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
+                line = re.sub(r" VALUES ",", ",line)
+                line = re.sub(r";\s*$","", line)
+                try:
+                    tree = parser.parse(line)
+                    cnt_rows = len(list(ProcessAST().transform(tree)))
+                    if tbl_name not in counts:
+                        counts["tbl_name"] = cnt_rows
+                    else:
+                        counts["tbl_name"] += cnt_rows
+                except Exception as e:
+                    pass
+        self.counts = counts
+        return counts
+
+    def print(self):
+        for k in sorted(self.counts.keys()):
+            print(k,self.counts[k])
 
 class ExtractSchema:
     def __init__(self, args):
