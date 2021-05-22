@@ -20,6 +20,8 @@ arg_parser.add_argument('--outdir', dest='outdir', action='store', required=True
 arg_parser.add_argument('--table-filter', dest='table_filter', action='store', required=False, type=str, help='filtered tables')
 arg_parser.add_argument('--only-schema', dest='only_schema', action='store_true', help='write the schema to the output directory')
 arg_parser.add_argument('--strip-quotes', dest='strip_quotes', action='store_true', help='strip quotes from values')
+arg_parser.add_argument('--debug', dest='debug', action='store_true', help='print debug information')
+arg_parser.add_argument('--ignore-errors', dest='ignore_errors', action='store_true', help='ignore processing errors')
 
 args   = arg_parser.parse_args()
 
@@ -30,7 +32,23 @@ else:
     splitter = Splitter(args)
     rows_written = 0
     seen_outfile = set()
-    for batch in splitter.next_batch():
+
+    batch_gen = splitter.next_batch()
+    while True:
+        batch = None
+        try:
+            batch = next(batch_gen)
+        except StopIteration as e:
+            break
+        except Exception as e:
+            if args.ignore_errors:
+                print(e)
+            else:
+                raise e
+
+        if args.ignore_errors and batch["parse_exc"]:
+            continue
+
         outfile = os.path.join(args.outdir,batch["table_name"] + ".tsv")
         if os.path.exists(outfile) and outfile not in seen_outfile:
             os.remove(outfile)

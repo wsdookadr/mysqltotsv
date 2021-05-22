@@ -127,18 +127,25 @@ class Splitter:
                 if len(self.table_filter) > 0 and tbl_name not in self.table_filter:
                     continue
                 num+=1
+                if self.args.debug:
+                    print("line num: ",num)
 
                 line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
                 line = re.sub(r" VALUES ",", ",line)
                 line = re.sub(r";\s*$","", line)
-                tree = parser.parse(line)
 
-                rows = list(ProcessAST().transform(tree))
-                if tbl_name in self.seen_table:
-                    rows.pop(0)
-                self.seen_table |= set([tbl_name])
+                parse_exc = None
+                rows = []
+                try:
+                    tree = parser.parse(line)
+                    rows = list(ProcessAST().transform(tree))
+                    if tbl_name in self.seen_table:
+                        rows.pop(0)
+                    self.seen_table |= set([tbl_name])
+                except Exception as e:
+                    parse_exc = e
 
-                yield { "table_name": tbl_name, "rows": rows }
+                yield { "table_name": tbl_name, "rows": rows, "parse_exc": parse_exc }
 
         self.fh.close()
 
