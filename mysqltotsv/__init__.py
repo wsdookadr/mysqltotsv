@@ -198,8 +198,8 @@ class Splitter:
                 if self.args.debug:
                     print("line num: ",num)
 
-                line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
-                line = re.sub(r" VALUES ",", ",line)
+                line = re.sub(r"INSERT INTO `([^\`]+)`","",line)
+                line = re.sub(r" VALUES ","",line)
                 line = re.sub(r";\s*$","", line)
 
                 parse_exc = None
