@@ -63,6 +63,18 @@ def test_invalid_insert():
     got = next(splitter.next_batch())
     assert got['parse_exc'] is not None
 
+def test_insert_into_without_column_names():
+    args = MockArgs()
+    args.table_filter = ""
+    args.file = "tests/t4.sql"
+    args.outdir = "tests/"
+    args.debug = False
+    splitter = Splitter(args)
+
+    got = next(splitter.next_batch())
+
+    assert len(got['rows']) == 1
+
 def test_row_strip_quotes():
     r = ['NULL', "'abc'", "`def`", 'NULL']
     expected = ['NULL', "abc", "def", 'NULL']

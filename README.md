@@ -52,8 +52,15 @@ optional arguments:
   --estimate2           estimate row counts for each table inside the sql file
 ```
 
+Ideas
+=====
+
+1. Rewrite the module to parse the entire INSERT INTO statement instead of the hybrid ad-hoc + grammar-based approach.
+2. Write a better estimator that samples a few records, measures their size, for each table, then measures the entire
+   file size and computes an estimate based on that.
+
 Support
 ==================
 
-For questions or requests for paid support, please send an e-mail to stefan.petrea@gmail.com
+For questions or requests please send an e-mail to stefan.petrea@gmail.com
 

@@ -199,6 +199,8 @@ class Splitter:
                     print("line num: ",num)
 
                 line = re.sub(r"INSERT INTO `([^\`]+)` ","",line)
+                if line.startswith('VALUES'):
+                    line = re.sub(r'^VALUES ','',line)
                 line = re.sub(r" VALUES ",", ",line)
                 line = re.sub(r";\s*$","", line)
 

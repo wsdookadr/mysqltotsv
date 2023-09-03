@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mysqltotsv",
-    version="0.1.3",
+    version="0.1.4",
     author="Stefan Corneliu Petrea",
     author_email="stefan.petrea@gmail.com",
     description="Tool for conversion of MySQL dumps to TSV format",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://blog.garage-coding.com/",
+    url="https://wsdookadr.github.io/posts/",
     packages=setuptools.find_packages(),
     scripts=["mysql-to-tsv.py"],
     install_requires=[
